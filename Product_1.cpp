@@ -57,7 +57,7 @@ float scene_intersect(const Vec3f &orig, const Vec3f &dir, const std::vector<Sph
 
     if (fabs(dir.y)>1e-3) {
 
-        float d = -(orig.y+4)/dir.y; // the checkerboard plane has equation y = -4
+        float d = -(orig.y+4)/dir.y; // плоскость шахматной доски имеет уравнение y = -4
 
         Vec3f pt = orig + dir*d;
 
@@ -87,7 +87,7 @@ void compute_depthmap(const size_t width, const size_t height, const float fov, 
 
             float dir_x = (i + 0.5) - ( width/2.);
 
-            float dir_y = -(j + 0.5) + (height/2.); // this flips the image at the same time
+            float dir_y = -(j + 0.5) + (height/2.); // это одновременно переворачивает изображение
 
             float dir_z = -(height/(2.*tan(fov/2.)));
 
@@ -101,7 +101,7 @@ void compute_depthmap(const size_t width, const size_t height, const float fov, 
 
 
 
-    float minval = std::numeric_limits<float>::max(); // clamp the zbuffer by the far plane and normalize it between 0 and 1
+    float minval = std::numeric_limits<float>::max(); // зажимает буфер z дальней плоскостью и нормализуйте его между 0 и 1
 
     float maxval = -std::numeric_limits<float>::max();
 
@@ -124,9 +124,9 @@ void compute_depthmap(const size_t width, const size_t height, const float fov, 
 
 int parallax(const float z) {
 
-    const float eye_separation = 400.; // interpupillary distance in pixels
+    const float eye_separation = 400.; // межзрачковое расстояние в пикселях
 
-    const float mu = .33; // if the far plane is a distance D behind the screen, then the near plane is a distance mu*D in front of the far plane
+    const float mu = .33; // если дальняя плоскость находится на расстоянии D за экраном, то ближняя плоскость находится на расстоянии mu*D перед дальней плоскостью
 
     return static_cast<int>(eye_separation*((1.-z*mu)/(2.-z*mu))+.5);
 
@@ -163,13 +163,13 @@ int main() {
 
         std::vector<unsigned char> framebuffer(width*height*3);
 
-        for (size_t j=0; j<height; j++) { // generate a random-ish image
+        for (size_t j=0; j<height; j++) { // генерируется случайное изображение
 
             for (size_t i=0; i<width; i++) {
 
-                framebuffer[(i+j*width)*3 + 0] = (rand()%256)*(sin(i*2*M_PI/200)+1)/2; // the sine generates vertical strips to ease focusing
+                framebuffer[(i+j*width)*3 + 0] = (rand()%256)*(sin(i*2*M_PI/200)+1)/2; // синус генерирует вертикальные полосы для облегчения фокусировки
 
-                framebuffer[(i+j*width)*3 + 0] = (rand()%256)*(sin(i*2*M_PI/parallax(0))+1)/2; // the sine generates vertical strips to ease focusing
+                framebuffer[(i+j*width)*3 + 0] = (rand()%256)*(sin(i*2*M_PI/parallax(0))+1)/2; // синус генерирует вертикальные полосы для облегчения фокусировки
 
                 framebuffer[(i+j*width)*3 + 1] = (rand()%256);
 
@@ -182,30 +182,30 @@ int main() {
 
 
 
-        for (size_t j=0; j<height; j++) { // autostereogram rendering loop
+        for (size_t j=0; j<height; j++) { // цикл рендеринга автостереограммы
 
             std::vector<size_t> same(width);
 
-            std::iota(same.begin(), same.end(), 0); // initialize the union-find data structure (same[i]=i)
+            std::iota(same.begin(), same.end(), 0); // инициализируйте структуру данных "объединение-поиск" (same[i]=i)
 
 
 
 
-            for (size_t i=0; i<width; i++) { // put the constraints
+            for (size_t i=0; i<width; i++) { // ставятся ограничения
 
                 int par = parallax(zbuffer[i+j*width]);
 
                 int left = i - par/2;
 
-                int right = left + par; // works better than i+par/2 for odd values of par
+                int right = left + par; // работает лучше, чем i+par/2 для нечетных значений параметров
 
                 if (left>=0 && right<(int)width)
 
-                    uf_union(same, left, right); // left and right pixels will have the same color
+                    uf_union(same, left, right); // левый и правый пиксели будут иметь одинаковый цвет
 
             }
 
-            for (size_t i=0; i<width; i++) { // resolve the constraints
+            for (size_t i=0; i<width; i++) { // устраняются ограничения
 
                 size_t root = uf_find(same, i);
 
@@ -220,7 +220,7 @@ int main() {
 
 
 
-        std::ofstream ofs("./out.ppm"); // save the framebuffer to file
+        std::ofstream ofs("./out.ppm"); // сохраняется буфер кадров в файл
 
         ofs << "P6\n" << width << " " << height << "\n255\n";
 
