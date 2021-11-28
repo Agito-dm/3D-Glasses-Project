@@ -74,7 +74,7 @@ float scene_intersect(const Vec3f &orig, const Vec3f &dir, const std::vector<Sph
 
     if (fabs(dir.y)>1e-3) {
 
-        float d = -(orig.y+4)/dir.y; // the checkerboard plane has equation y = -4
+        float d = -(orig.y+4)/dir.y; // плоскость шахматной доски имеет уравнение y = -4
 
         Vec3f pt = orig + dir*d;
 
@@ -104,7 +104,7 @@ void compute_depthmap(const size_t width, const size_t height, const float fov, 
 
             float dir_x = (i + 0.5) - ( width/2.);
 
-            float dir_y = -(j + 0.5) + (height/2.); // this flips the image at the same time
+            float dir_y = -(j + 0.5) + (height/2.); // это одновременно переворачивает изображение
 
             float dir_z = -(height/(2.*tan(fov/2.)));
 
@@ -118,7 +118,7 @@ void compute_depthmap(const size_t width, const size_t height, const float fov, 
 
 
 
-    float minval = std::numeric_limits<float>::max(); // clamp the zbuffer by the far plane and normalize it between 0 and 1
+    float minval = std::numeric_limits<float>::max(); // зажимает буфер z дальней плоскостью и нормализуйте его между 0 и 1
 
     float maxval = -std::numeric_limits<float>::max();
 
@@ -156,7 +156,7 @@ int main() {
 
     std::vector<unsigned char> framebuffer(width*height*3);
 
-    for (size_t j=0; j<height; j++) { // generate a random-ish image
+    for (size_t j=0; j<height; j++) { // генерируется случайное изображение
 
         for (size_t i=0; i<width; i++) {
 
@@ -172,7 +172,7 @@ int main() {
 
 
 
-    std::ofstream ofs("./out.ppm"); // save the framebuffer to file
+    std::ofstream ofs("./out.ppm"); // сохраняется буфер кадров в файл
 
     ofs << "P6\n" << width << " " << height << "\n255\n";
 
